@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.types) {
                     replaceFragment(new ProfileFragment());
+
                 } else if (item.getItemId() == R.id.home) {
                     replaceFragment(new VillaFragment());
                 }
