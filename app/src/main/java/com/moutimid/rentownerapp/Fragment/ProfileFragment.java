@@ -36,19 +36,17 @@ public class ProfileFragment extends Fragment {
         logout = view.findViewById(R.id.logout);
         profile_img = view.findViewById(R.id.profile_pic);
         name = view.findViewById(R.id.name);
-        dob = view.findViewById(R.id.dob);
         email = view.findViewById(R.id.email);
         phone_number = view.findViewById(R.id.phone_number);
         userID = Stash.getString("userID");
-        Constants.UserReference.child("uMOq2o9REveNcVDynlcyAHalaQH3").addListenerForSingleValueEvent(new ValueEventListener() {
+        Constants.OwnerReference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 UserModel userNew = snapshot.getValue(UserModel.class);
                 name.setText(userNew.getName());
-                dob.setText(userNew.dob);
-                email.setText(userNew.email);
-                phone_number.setText(userNew.phone_number);
-                Glide.with(getContext()).load(userNew.image_url).into(profile_img);
+                email.setText(userNew.getEmail());
+                phone_number.setText(userNew.getPhone());
+                Glide.with(getContext()).load(userNew.getImage()).into(profile_img);
             }
 
             @Override

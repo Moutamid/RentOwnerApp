@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">rentownerappAdmin</string>
+    <string name="app_name">OwnerApp</string>
     <string name="property_name">Property Name</string>
     <string name="property_description">Property Description</string>
     <string name="property_area">Area (m²)</string>

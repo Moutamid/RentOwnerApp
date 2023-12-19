@@ -1,33 +1,43 @@
 package com.moutimid.rentownerapp.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.fxn.stash.Stash;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.moutimid.rentownerapp.R;
+import com.moutimid.rentownerapp.activities.Home.VillaDetailsActivity;
+import com.moutimid.rentownerapp.dailogues.CalenderDialogClass;
+import com.moutimid.rentownerapp.helper.Config;
 import com.moutimid.rentownerapp.model.Villa;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class OwnVillaAdapter extends RecyclerView.Adapter<OwnVillaAdapter.GalleryPhotosViewHolder> {
 
 
     Context ctx;
     List<Villa> productModels;
+    Activity activity;
 
-    public OwnVillaAdapter(Context ctx, List<Villa> productModels) {
+    public OwnVillaAdapter(Activity activity, Context ctx, List<Villa> productModels) {
         this.ctx = ctx;
         this.productModels = productModels;
+        this.activity = activity;
     }
 
     @NonNull
@@ -47,17 +57,41 @@ public class OwnVillaAdapter extends RecyclerView.Adapter<OwnVillaAdapter.Galler
     public void onBindViewHolder(@NonNull GalleryPhotosViewHolder holder, final int position) {
         Villa villa = productModels.get(position);
         holder.villa_name.setText(villa.getName());
-        holder.user_name.setText(villa.getUserName());
-        holder.villa_discription.setText(villa.getBill() + " $/month");
-        if (villa.isBills_included()) {
-            holder.bill_included.setText("Included");
+        if (villa.getAvailable().equals("not_available")) {
+            holder.not_available.setChecked(true);
         } else {
-            holder.bill_included.setText("Not Included");
-
+            holder.available.setChecked(true);
         }
-        Glide.with(ctx).load(villa.getImage()).into(holder.image);
-        Glide.with(ctx).load(villa.getUserImage()).into(holder.user_image);
+        holder.available.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Stash.put(Config.currentModel, villa);
+                CalenderDialogClass calenderDialogClass = new CalenderDialogClass(activity);
+                calenderDialogClass.show();
+            }
+        });
+        holder.not_available.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b)
+                {
+                    Stash.put(Config.currentModel, villa);
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    Villa villaModel = (Villa) Stash.getObject(Config.currentModel, Villa.class);
+                    DatabaseReference propertyRef = database.getReference("RentApp").child("Villas");
+                    propertyRef.child(villaModel.getKey()).child("available").setValue("not_available".toString());
 
+                }
+            }
+        });
+        Glide.with(ctx).load(villa.getImage()).into(holder.image);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Stash.put(Config.currentModel, villa);
+                ctx.startActivity(new Intent(ctx, VillaDetailsActivity.class));
+            }
+        });
     }
 
     @Override
@@ -67,20 +101,18 @@ public class OwnVillaAdapter extends RecyclerView.Adapter<OwnVillaAdapter.Galler
 
     public class GalleryPhotosViewHolder extends RecyclerView.ViewHolder {
 
-        TextView villa_discription, villa_name, bill_included, user_name;
+        TextView villa_name, bill_included;
         ImageView image;
-        CircleImageView user_image;
 
+        RadioButton not_available, available;
 
         public GalleryPhotosViewHolder(@NonNull View itemView) {
             super(itemView);
-            villa_discription = itemView.findViewById(R.id.bill);
             villa_name = itemView.findViewById(R.id.villa_name);
             image = itemView.findViewById(R.id.image);
             bill_included = itemView.findViewById(R.id.bill_included);
-            user_name = itemView.findViewById(R.id.user_name);
-            user_image = itemView.findViewById(R.id.user_image);
-
+            not_available = itemView.findViewById(R.id.not_available);
+            available = itemView.findViewById(R.id.available);
         }
     }
 }

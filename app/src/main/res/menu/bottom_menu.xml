@@ -7,9 +7,9 @@
         android:title="Villas" />
 
     <item
-        android:id="@+id/favourite"
-        android:icon="@drawable/baseline_favorite_24"
-        android:title="Favourite" />
+        android:id="@+id/user"
+        android:icon="@drawable/user"
+        android:title="Profile" />
 
 
 

@@ -15,6 +15,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        setProperty("archivesBaseName", "VillaOwnerApp-$versionName")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

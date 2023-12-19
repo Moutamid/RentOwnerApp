@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +24,22 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fxn.stash.Stash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.moutimid.rentownerapp.R;
 import com.moutimid.rentownerapp.activities.Home.MapActivity;
 import com.moutimid.rentownerapp.adapter.OwnVillaAdapter;
 import com.moutimid.rentownerapp.helper.Config;
 import com.moutimid.rentownerapp.helper.Constants;
+import com.moutimid.rentownerapp.model.Bathroom;
+import com.moutimid.rentownerapp.model.Bedroom;
+import com.moutimid.rentownerapp.model.HouseRules;
 import com.moutimid.rentownerapp.model.LocationModel;
+import com.moutimid.rentownerapp.model.PropertyAmenities;
+import com.moutimid.rentownerapp.model.PropertyDetails;
 import com.moutimid.rentownerapp.model.Villa;
 
 import java.util.ArrayList;
@@ -60,7 +68,7 @@ public class VillaFragment extends Fragment {
         no_text = view.findViewById(R.id.no_text);
         mic = view.findViewById(R.id.mic);
         content_rcv.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        herbsAdapter = new OwnVillaAdapter(getContext(), productModelList);
+        herbsAdapter = new OwnVillaAdapter(getActivity(), getContext(), productModelList);
         content_rcv.setAdapter(herbsAdapter);
         map.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,12 +131,23 @@ public class VillaFragment extends Fragment {
 
     private void getProducts() {
 //        Config.showProgressDialog(getContext());
-        Constants.databaseReference().child(Config.villa).addValueEventListener(new ValueEventListener() {
+        Query query = Constants.databaseReference().child(Config.villa).orderByChild("ownerID").equalTo(Stash.getString("userID"));
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 productModelList.clear();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Villa herbsModel = ds.getValue(Villa.class);
+                    DataSnapshot propertyAmenities1 = ds.child("PropertyAmenities");
+                     DataSnapshot houseRules1 = ds.child("HouseRules");
+                    PropertyAmenities propertyAmenities = propertyAmenities1.getValue(PropertyAmenities.class);
+                    HouseRules houseRules = houseRules1.getValue(HouseRules.class);
+                    herbsModel.setPropertyAmenities(propertyAmenities);
+//                    herbsModel.setBathroom(bathroom1);
+                    herbsModel.setHouseRules(houseRules);
+//                    Log.d("dataaa", herbsModel + "  io ");
+//                    herbsModel.setPropertyDetails(propertyDetails);
+//                    herbsModel.setHouseRules(houseRules);
                     productModelList.add(herbsModel);
                 }
                 herbsAdapter.notifyDataSetChanged();

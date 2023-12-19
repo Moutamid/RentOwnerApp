@@ -11,19 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fxn.stash.Stash;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.moutimid.rentownerapp.MainActivity;
 import com.moutimid.rentownerapp.R;
 import com.moutimid.rentownerapp.helper.Constants;
-import com.moutimid.rentownerapp.model.UserModel;
 
 import java.util.Objects;
 
@@ -47,9 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         initComponent();
         firebaseAuth = FirebaseAuth.getInstance();
-        if (firebaseAuth.getCurrentUser() != null) {
-            startActivity(new Intent(this, MainActivity.class));
-        }
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,40 +70,26 @@ public class LoginActivity extends AppCompatActivity {
         } else if (password_str.length() == 0) {
             password.setError("Please Error");
         } else {
+            Dialog lodingbar = new Dialog(LoginActivity.this);
+            lodingbar.setContentView(R.layout.loading);
+            Objects.requireNonNull(lodingbar.getWindow()).setBackgroundDrawable(new ColorDrawable(UCharacter.JoiningType.TRANSPARENT));
+            lodingbar.setCancelable(false);
+            lodingbar.show();
+            Constants.auth().signInWithEmailAndPassword(
+                    email.getText().toString(),
+                    password.getText().toString()
+            ).addOnSuccessListener(authResult -> {
 
-                Dialog lodingbar = new Dialog(LoginActivity.this);
-                lodingbar.setContentView(R.layout.loading);
-                Objects.requireNonNull(lodingbar.getWindow()).setBackgroundDrawable(new ColorDrawable(UCharacter.JoiningType.TRANSPARENT));
-                lodingbar.setCancelable(false);
-                lodingbar.show();
-                Constants.auth().signInWithEmailAndPassword(
-                        email.getText().toString(),
-                        password.getText().toString()
-                ).addOnSuccessListener(authResult -> {
+                Stash.put("userID", authResult.getUser().getUid());
+                lodingbar.dismiss();
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finishAffinity();
 
-                    Constants.UserReference.child(authResult.getUser().getUid()).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                UserModel userModel = snapshot.getValue(UserModel.class);
-                                Stash.put("UserDetails", userModel);
-                                lodingbar.dismiss();
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                finishAffinity();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
-                }).addOnFailureListener(e -> {
-                    lodingbar.dismiss();
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-            }
+            }).addOnFailureListener(e -> {
+                lodingbar.dismiss();
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+        }
 
 
 

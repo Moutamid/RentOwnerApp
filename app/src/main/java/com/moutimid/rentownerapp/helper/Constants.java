@@ -19,5 +19,5 @@ public class Constants {
         return db;
     }
 
-    public static DatabaseReference UserReference = FirebaseDatabase.getInstance().getReference(db_path).child("users");
+    public static DatabaseReference OwnerReference = FirebaseDatabase.getInstance().getReference(db_path).child("Owners");
   }

@@ -44,10 +44,13 @@
             android:layout_height="wrap_content">
 
             <RadioButton
+android:id="@+id/available"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:text="Available" />
             <RadioButton
+                android:id="@+id/not_available"
+
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:text="Not Available" />

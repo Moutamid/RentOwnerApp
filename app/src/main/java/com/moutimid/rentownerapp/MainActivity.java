@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         binding.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.types) {
+                if (item.getItemId() == R.id.user) {
                     replaceFragment(new ProfileFragment());
 
                 } else if (item.getItemId() == R.id.home) {
@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

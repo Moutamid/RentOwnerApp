@@ -1,30 +1,31 @@
 package com.moutimid.rentownerapp.dailogues;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.fxn.stash.Stash;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.moutimid.rentownerapp.R;
-import com.moutimid.rentownerapp.activities.Home.VillaDetailsActivity;
-import com.moutimid.rentownerapp.helper.EventDecorator;
+import com.moutimid.rentownerapp.helper.Config;
+import com.moutimid.rentownerapp.model.Villa;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.format.DayFormatter;
 
-import org.threeten.bp.LocalDate;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class CalenderDialogClass extends Dialog {
 
@@ -41,9 +42,12 @@ public class CalenderDialogClass extends Dialog {
     int gray = 1;
 
     MaterialCalendarView calendarView;
-    Context c;
+    Activity c;
+    private Button selectButton;
 
-    public CalenderDialogClass(Context a) {
+    private List<CalendarDay> selectedDates;
+
+    public CalenderDialogClass(Activity a) {
         super(a);
         // TODO Auto-generated constructor stub
         this.c = a;
@@ -56,107 +60,49 @@ public class CalenderDialogClass extends Dialog {
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         setContentView(R.layout.calender_dailogue);
         Button next_button = findViewById(R.id.next_button);
-        next_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-                c.startActivity(new Intent(c, VillaDetailsActivity.class));
 
+        calendarView = findViewById(R.id.calendarView);
+
+        selectedDates = new ArrayList<>();
+
+
+        calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                if (selected) {
+                    selectedDates.add(date);
+                } else {
+                    selectedDates.remove(date);
+                }
+                calendarView.invalidateDecorators();
             }
         });
-        calendarView = findViewById(R.id.calendarView);
-        calendarView.setShowOtherDates(MaterialCalendarView.SHOW_ALL);
 
-        final LocalDate min = getLocalDate("2023-01-01");
-        final LocalDate max = getLocalDate("2023-01-04");
-
-        calendarView.state().edit().setMinimumDate(min).setMaximumDate(max).commit();
-
-
-        setEvent(pinkDateList, pink);
-//        setEvent(grayDateList, gray);
-
-        calendarView.invalidateDecorators();
-    }
-
-    void setEvent(List<String> dateList, int color) {
-        List<LocalDate> localDateList = new ArrayList<>();
-
-        for (String string : dateList) {
-            LocalDate calendar = getLocalDate(string);
-            if (calendar != null) {
-                localDateList.add(calendar);
-            }
-        }
-
-
-        List<CalendarDay> datesLeft = new ArrayList<>();
-        List<CalendarDay> datesCenter = new ArrayList<>();
-        List<CalendarDay> datesRight = new ArrayList<>();
-        List<CalendarDay> datesIndependent = new ArrayList<>();
-
-
-        for (LocalDate localDate : localDateList) {
-
-            boolean right = false;
-            boolean left = false;
-
-            for (LocalDate day1 : localDateList) {
-
-
-                if (localDate.isEqual(day1.plusDays(1))) {
-                    left = true;
-                }
-                if (day1.isEqual(localDate.plusDays(1))) {
-                    right = true;
+        calendarView.setDayFormatter(new DayFormatter() {
+            @Override
+            public String format(CalendarDay day) {
+                if (selectedDates.contains(day)) {
+                    return "✓ " + day.getDay();
+                } else {
+                    return String.valueOf(day.getDay());
                 }
             }
+        });
 
-            if (left && right) {
-                datesCenter.add(CalendarDay.from(localDate));
-            } else if (left) {
-                datesLeft.add(CalendarDay.from(localDate));
-            } else if (right) {
-                datesRight.add(CalendarDay.from(localDate));
-            } else {
-                datesIndependent.add(CalendarDay.from(localDate));
+        next_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StringBuilder selectedDatesString = new StringBuilder();
+                for (CalendarDay date : selectedDates) {
+                    selectedDatesString.append(date.getDate()).append(",");
+                }
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                Villa villaModel = (Villa) Stash.getObject(Config.currentModel, Villa.class);
+                DatabaseReference propertyRef = database.getReference("RentApp").child("Villas");
+                propertyRef.child(villaModel.getKey()).child("available_dates").setValue(selectedDatesString.toString());
+                propertyRef.child(villaModel.getKey()).child("available").setValue("available".toString());
+                dismiss();
             }
-        }
-
-        if (color == pink) {
-            setDecor(datesCenter, R.drawable.p_center);
-            setDecor(datesLeft, R.drawable.p_left);
-            setDecor(datesRight, R.drawable.p_right);
-            setDecor(datesIndependent, R.drawable.p_independent);
-        } else {
-            setDecor(datesCenter, R.drawable.g_center);
-            setDecor(datesLeft, R.drawable.g_left);
-            setDecor(datesRight, R.drawable.g_right);
-            setDecor(datesIndependent, R.drawable.g_independent);
-        }
-    }
-
-    void setDecor(List<CalendarDay> calendarDayList, int drawable) {
-        calendarView.addDecorators(new EventDecorator(c
-                , drawable
-                , calendarDayList));
-    }
-
-    LocalDate getLocalDate(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
-        try {
-            Date input = sdf.parse(date);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(input);
-            return LocalDate.of(cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH) + 1,
-                    cal.get(Calendar.DAY_OF_MONTH));
-
-
-        } catch (NullPointerException e) {
-            return null;
-        } catch (ParseException e) {
-            return null;
-        }
+        });
     }
 }

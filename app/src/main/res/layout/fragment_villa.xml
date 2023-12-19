@@ -39,6 +39,7 @@
         android:layout_below="@+id/toolbar_"
         android:elevation="5dp"
 
+
         >
 
         <EditText
@@ -53,7 +54,7 @@
             android:backgroundTint="@color/white"
             android:drawableStart="@drawable/baseline_youtube_searched_for_24"
             android:fontFamily="@font/calibri"
-            android:hint="  Search for desired Villas"
+            android:hint="  Search your own Villas"
             android:padding="15dp"
             android:textColor="@color/black"
             android:textColorHint="@color/grey"
