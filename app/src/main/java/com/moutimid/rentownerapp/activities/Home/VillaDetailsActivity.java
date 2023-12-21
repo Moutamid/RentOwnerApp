@@ -48,15 +48,19 @@ public class VillaDetailsActivity extends AppCompatActivity {
         roomArea.setText(villaModel.getArea()+"m²");
         LinearLayout noOfBedroomLayout = findViewById(R.id.no_of_bedroom_layout);
         TextView noOfBedroom = findViewById(R.id.no_of_bedroom);
-        noOfBedroom.setText(villaModel.getBedroom()+"");
+        noOfBedroom.setText(villaModel.getBedroom() + "");
         LinearLayout noOfBathroomLayout = findViewById(R.id.no_of_bathroom_layout);
         TextView noOfBathroom = findViewById(R.id.no_of_bathroom);
-        noOfBathroom.setText(villaModel.getBathRoom()+"");
+        noOfBathroom.setText(villaModel.getBathRoom() + "");
         TextView descriptionTitle = findViewById(R.id.description_title);
         TextView description = findViewById(R.id.description);
+        TextView available_person = findViewById(R.id.available_person);
         description.setText(villaModel.getDescription());
         TextView availability = findViewById(R.id.availability);
         TextView billIncluded = findViewById(R.id.bill_included);
+        TextView town = findViewById(R.id.town);
+        town.setText(villaModel.town_name);
+        available_person.setText(villaModel.no_of_persons);
         if (villaModel.isBills_included()) {
             billIncluded.setText("Included");
         } else {

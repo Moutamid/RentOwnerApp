@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,16 +29,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.moutimid.rentownerapp.R;
+import com.moutimid.rentownerapp.activities.Home.AddVillaActivity;
 import com.moutimid.rentownerapp.activities.Home.MapActivity;
 import com.moutimid.rentownerapp.adapter.OwnVillaAdapter;
 import com.moutimid.rentownerapp.helper.Config;
 import com.moutimid.rentownerapp.helper.Constants;
-import com.moutimid.rentownerapp.model.Bathroom;
-import com.moutimid.rentownerapp.model.Bedroom;
 import com.moutimid.rentownerapp.model.HouseRules;
 import com.moutimid.rentownerapp.model.LocationModel;
 import com.moutimid.rentownerapp.model.PropertyAmenities;
-import com.moutimid.rentownerapp.model.PropertyDetails;
 import com.moutimid.rentownerapp.model.Villa;
 
 import java.util.ArrayList;
@@ -57,12 +54,14 @@ public class VillaFragment extends Fragment {
     String lcode = "en-US";
     ImageView map;
     ArrayList<LocationModel> userArrayList = new ArrayList<>();
+    ImageView add_button;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_villa, container, false);
         map = view.findViewById(R.id.map);
+        add_button = view.findViewById(R.id.add_button);
         content_rcv = view.findViewById(R.id.content_rcv);
         search = view.findViewById(R.id.search);
         no_text = view.findViewById(R.id.no_text);
@@ -70,6 +69,12 @@ public class VillaFragment extends Fragment {
         content_rcv.setLayoutManager(new GridLayoutManager(getContext(), 1));
         herbsAdapter = new OwnVillaAdapter(getActivity(), getContext(), productModelList);
         content_rcv.setAdapter(herbsAdapter);
+        add_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getContext().startActivity(new Intent(getContext(), AddVillaActivity.class));
+            }
+        });
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,17 +143,19 @@ public class VillaFragment extends Fragment {
                 productModelList.clear();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Villa herbsModel = ds.getValue(Villa.class);
-                    DataSnapshot propertyAmenities1 = ds.child("PropertyAmenities");
-                     DataSnapshot houseRules1 = ds.child("HouseRules");
-                    PropertyAmenities propertyAmenities = propertyAmenities1.getValue(PropertyAmenities.class);
-                    HouseRules houseRules = houseRules1.getValue(HouseRules.class);
-                    herbsModel.setPropertyAmenities(propertyAmenities);
+                    if (herbsModel.verified) {
+                        DataSnapshot propertyAmenities1 = ds.child("PropertyAmenities");
+                        DataSnapshot houseRules1 = ds.child("HouseRules");
+                        PropertyAmenities propertyAmenities = propertyAmenities1.getValue(PropertyAmenities.class);
+                        HouseRules houseRules = houseRules1.getValue(HouseRules.class);
+                        herbsModel.setPropertyAmenities(propertyAmenities);
 //                    herbsModel.setBathroom(bathroom1);
-                    herbsModel.setHouseRules(houseRules);
+                        herbsModel.setHouseRules(houseRules);
 //                    Log.d("dataaa", herbsModel + "  io ");
 //                    herbsModel.setPropertyDetails(propertyDetails);
 //                    herbsModel.setHouseRules(houseRules);
-                    productModelList.add(herbsModel);
+                        productModelList.add(herbsModel);
+                    }
                 }
                 herbsAdapter.notifyDataSetChanged();
             }

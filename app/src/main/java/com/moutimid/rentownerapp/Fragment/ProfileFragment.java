@@ -24,7 +24,6 @@ import com.moutimid.rentownerapp.helper.Constants;
 import com.moutimid.rentownerapp.model.UserModel;
 
 public class ProfileFragment extends Fragment {
-    ImageView profile_img;
     TextView name, dob, email, phone_number;
     String userID;
     Button logout;
@@ -34,7 +33,6 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile2, container, false);
         logout = view.findViewById(R.id.logout);
-        profile_img = view.findViewById(R.id.profile_pic);
         name = view.findViewById(R.id.name);
         email = view.findViewById(R.id.email);
         phone_number = view.findViewById(R.id.phone_number);
@@ -46,7 +44,6 @@ public class ProfileFragment extends Fragment {
                 name.setText(userNew.getName());
                 email.setText(userNew.getEmail());
                 phone_number.setText(userNew.getPhone());
-                Glide.with(getContext()).load(userNew.getImage()).into(profile_img);
             }
 
             @Override

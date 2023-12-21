@@ -20,7 +20,13 @@ public class Villa {
     private String title;
     public String available;
     public String available_dates;
+    public String town_name;
+    public String city_name;
 
+    public String ownerID;
+    public int no_of_persons;
+
+    public boolean verified;
 
     // Default constructor for Firebase
     public Villa() {
