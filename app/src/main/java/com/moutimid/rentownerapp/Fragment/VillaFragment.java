@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -54,7 +55,7 @@ public class VillaFragment extends Fragment {
     String lcode = "en-US";
     ImageView map;
     ArrayList<LocationModel> userArrayList = new ArrayList<>();
-    ImageView add_button;
+    Button add_button;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -143,7 +144,7 @@ public class VillaFragment extends Fragment {
                 productModelList.clear();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Villa herbsModel = ds.getValue(Villa.class);
-                    if (herbsModel.verified) {
+//                    if (herbsModel.verified) {
                         DataSnapshot propertyAmenities1 = ds.child("PropertyAmenities");
                         DataSnapshot houseRules1 = ds.child("HouseRules");
                         PropertyAmenities propertyAmenities = propertyAmenities1.getValue(PropertyAmenities.class);
@@ -155,7 +156,7 @@ public class VillaFragment extends Fragment {
 //                    herbsModel.setPropertyDetails(propertyDetails);
 //                    herbsModel.setHouseRules(houseRules);
                         productModelList.add(herbsModel);
-                    }
+//                    }
                 }
                 herbsAdapter.notifyDataSetChanged();
             }
@@ -165,7 +166,6 @@ public class VillaFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-
 
         });
 //        Constants.databaseReference().child("Locations").addValueEventListener(new ValueEventListener() {

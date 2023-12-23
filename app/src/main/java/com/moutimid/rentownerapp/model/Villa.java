@@ -18,18 +18,23 @@ public class Villa {
     private double lat;
     private double lng;
     private String title;
+
     public String available;
     public String available_dates;
-    public String town_name;
-    public String city_name;
-
-    public String ownerID;
     public int no_of_persons;
 
     public boolean verified;
-
     // Default constructor for Firebase
+
+    public double distance;
+
     public Villa() {
+    }
+
+    public Villa(double lat, double lng, String title) {
+        this.lat = lat;
+        this.lng = lng;
+        this.title = title;
     }
 
     public HouseRules getHouseRules() {
@@ -121,11 +126,27 @@ public class Villa {
         this.propertyAmenities = propertyAmenities;
     }
 
+    public void setPropertyDetails(PropertyDetails propertyDetails) {
+        this.propertyDetails = propertyDetails;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getAvailable() {
         return available;
     }
 
-    public void setAvailable(String available) {
-        this.available = available;
+    public String getAvailable_dates() {
+        return available_dates;
     }
 }

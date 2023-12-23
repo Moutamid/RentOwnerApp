@@ -52,18 +52,6 @@
             android:inputType="textMultiLine"
             android:padding="10dp" />
 
-        <EditText
-            android:id="@+id/area_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/edit_bg"
-
-            android:hint="@string/property_area"
-            android:inputType="number"
-            android:padding="10dp" />
 
         <EditText
             android:id="@+id/bedroom_edit_text"
@@ -99,7 +87,7 @@
             android:layout_marginRight="20dp"
             android:background="@drawable/edit_bg"
 
-            android:hint="Available for ow many persons?"
+            android:hint="Available for how many persons?"
             android:inputType="number"
             android:padding="10dp" />
 
@@ -161,7 +149,6 @@
             android:layout_marginRight="20dp"
             android:background="@drawable/edit_bg"
             android:hint="Enter City Name"
-            android:inputType="number"
             android:padding="10dp" />
 
         <EditText
@@ -176,6 +163,20 @@
             android:hint="@string/bill"
             android:inputType="number"
             android:padding="10dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp" />
+        <Button
+            android:id="@+id/button_choose_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose Villa's Image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

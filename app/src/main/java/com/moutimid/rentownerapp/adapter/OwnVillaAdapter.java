@@ -62,6 +62,16 @@ public class OwnVillaAdapter extends RecyclerView.Adapter<OwnVillaAdapter.Galler
         } else {
             holder.available.setChecked(true);
         }
+        if (villa.verified) {
+            holder.verified.setText("Verified");
+            holder.verified.setTextColor(ctx.getResources().getColor(R.color.green_color));
+
+        } else {
+            holder.verified.setText("Not Verified");
+            holder.verified.setTextColor(ctx.getResources().getColor(R.color.red));
+
+        }
+
         holder.available.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,7 +111,7 @@ public class OwnVillaAdapter extends RecyclerView.Adapter<OwnVillaAdapter.Galler
 
     public class GalleryPhotosViewHolder extends RecyclerView.ViewHolder {
 
-        TextView villa_name, bill_included;
+        TextView villa_name, verified;
         ImageView image;
 
         RadioButton not_available, available;
@@ -110,9 +120,9 @@ public class OwnVillaAdapter extends RecyclerView.Adapter<OwnVillaAdapter.Galler
             super(itemView);
             villa_name = itemView.findViewById(R.id.villa_name);
             image = itemView.findViewById(R.id.image);
-            bill_included = itemView.findViewById(R.id.bill_included);
             not_available = itemView.findViewById(R.id.not_available);
             available = itemView.findViewById(R.id.available);
+            verified = itemView.findViewById(R.id.verified);
         }
     }
 }

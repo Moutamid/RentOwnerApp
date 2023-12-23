@@ -15,26 +15,28 @@ import com.moutimid.rentownerapp.Fragment.ProfileFragment;
 import com.moutimid.rentownerapp.Fragment.VillaFragment;
 import com.moutimid.rentownerapp.helper.Config;
 
+import me.ibrahimsn.lib.OnItemSelectedListener;
+import me.ibrahimsn.lib.SmoothBottomBar;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView binding;
+    SmoothBottomBar binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        binding = findViewById(R.id.bottomNavigationView);
+        binding = findViewById(R.id.bottomBar);
         Config.checkApp(MainActivity.this);
         replaceFragment(new VillaFragment());
         binding.setBackground(null);
-        binding.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        binding.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.user) {
+            public boolean onItemSelect(int item) {
+                if (item == 1) {
                     replaceFragment(new ProfileFragment());
-
-                } else if (item.getItemId() == R.id.home) {
+                } else if (item == 0) {
                     replaceFragment(new VillaFragment());
                 }
                 return true;

@@ -28,9 +28,8 @@ public class SplashActivity extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.logo);
         ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(
                 imageView,
-                PropertyValuesHolder.ofFloat("scaleX", 3.9F),
-
-                PropertyValuesHolder.ofFloat("scaleY", 3.9F)
+                PropertyValuesHolder.ofFloat("scaleX", 2.8F),
+                PropertyValuesHolder.ofFloat("scaleY", 2.8F)
         );
         objectAnimator.setDuration(2000);
         objectAnimator.start();
